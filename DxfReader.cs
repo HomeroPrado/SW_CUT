@@ -9,10 +9,11 @@ namespace SW_CUT.Core
     {
         public string Tipo { get; set; }
         public List<(double X, double Y)> Pontos { get; set; } = new();
-        public double Raio { get; set; } = 0; // usado para círculos/arcos
+        public double Raio { get; set; } = 0; // definir círculo
+    
     }
 
-    public class DxfReader
+    public class DxfReader //map the .dxf and turn in a drawning
     {
         public List<Shape> LerArquivo(string caminhoArquivo)
         {
@@ -39,7 +40,7 @@ namespace SW_CUT.Core
                             });
                             break;
 
-                        case EntityType.LwPolyline:
+                        case EntityType.LwPolyline: //read 2 lines or more inte same drawning - doesnt exists circles in this case
                             var poli = (LwPolyline)entidade;
                             var pontos = new List<(double X, double Y)>();
                             foreach (var v in poli.Vertexes)
@@ -53,7 +54,7 @@ namespace SW_CUT.Core
                             });
                             break;
 
-                        case EntityType.Circle:
+                        case EntityType.Circle: //map the unique line (circle) and turn in a drawning
                             var circ = (Circle)entidade;
                             shapes.Add(new Shape
                             {
@@ -66,7 +67,7 @@ namespace SW_CUT.Core
                             });
                             break;
 
-                        case EntityType.Arc:
+                        case EntityType.Arc: //map an arc and turn in a drawning
                             var arco = (Arc)entidade;
                             shapes.Add(new Shape
                             {
@@ -87,7 +88,7 @@ namespace SW_CUT.Core
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao carregar DXF: {ex.Message}");
+                Console.WriteLine($"Erro ao carregar DXF: {ex.Message}"); //dont upload an valid archive or the system doesn't recognize
             }
 
             return shapes;
